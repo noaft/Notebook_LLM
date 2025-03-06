@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/index.css') }}">
+    <title>Chat UI</title>
+</head>
+
+<body>
+    <button class = "add-data">+ Add data</button>
+    <div class = "chat-show">
+
+    </div>
+
+    <div class="chat-container">
+        <input type="text" class="chat-input" placeholder="Bắt đầu nhập ....">
+        <img src="/static/image/send.png" class = "send" id = "send">
+        <img src="/static/image/mic.png" class = "mic" id = "mic">
+    </div>
+</body>
+</html>
