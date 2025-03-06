@@ -4,6 +4,8 @@ from pathlib import Path
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
+from api.upload import router
+
 
 BASE_DIR = Path(__file__).resolve().parent
 static_dir = Path(BASE_DIR, "static")
@@ -25,6 +27,8 @@ app.add_middleware(
     allow_methods=["*"], # admit for all method
     allow_headers=["*"], # all method
 )
+
+app.include_router(router=router)
 
 @app.get("/", response_class=HTMLResponse)
 async def get_index(request: Request):
