@@ -2,3 +2,4 @@ fastapi
 uvicorn
 starlette
 jinja2
+sentence-transformers

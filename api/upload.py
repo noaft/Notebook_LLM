@@ -1,7 +1,7 @@
-from fastapi import APIRouter 
+from fastapi import FastAPI, File, UploadFile
 
-router = APIRouter()
+app = FastAPI()
 
-@router.post("/upload")
-def upload():
-    pass
+@app.post("/upload")
+async def upload(file: UploadFile = File(...)):
+    return {"filename": file.filename, "content_type": file.content_type}
