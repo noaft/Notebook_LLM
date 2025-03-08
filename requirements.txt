@@ -3,3 +3,5 @@ uvicorn
 starlette
 jinja2
 sentence-transformers
+faiss-cpu
+numpy

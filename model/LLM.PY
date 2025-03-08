@@ -18,5 +18,5 @@ class model:
         Return:
             List of vector embedded
         """
-        embeddings = model.encode(sentences)
+        embeddings = self.model.encode(sentences)
         return embeddings
