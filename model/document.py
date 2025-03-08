@@ -35,6 +35,17 @@ class PDFEmbeddingFAISS:
         faiss.write_index(self.index, filename)
         print(f"FAISS index has been saved to {filename}") 
 
+    def save_multil(self, embeddings, filename="faiss_index.bin"):
+        dimension = embeddings[0].shape[0]
+        print(dimension)
+        self.index = faiss.IndexFlatL2(dimension) # init index
+
+        for embedding in embeddings:
+            self.index.add(embedding.reshape(1, -1))
+
+        faiss.write_index(self.index, filename)
+        print(f"FAISS index has been saved to {filename}") 
+
     def load_data(self, query, filename="faiss_index.bin", k=1):
         """
         Load FAISS index and search for similar texts

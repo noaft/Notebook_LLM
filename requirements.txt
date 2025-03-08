@@ -5,3 +5,5 @@ jinja2
 sentence-transformers
 faiss-cpu
 numpy
+timm==0.9.12
+PyPDF2
