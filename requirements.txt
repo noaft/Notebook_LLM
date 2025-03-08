@@ -7,3 +7,4 @@ faiss-cpu
 numpy
 timm==0.9.12
 PyPDF2
+python-multipart
