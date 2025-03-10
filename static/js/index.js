@@ -29,8 +29,13 @@ add_pdf.addEventListener("change", function (event) { // Đổi từ "click" th�
 
 send.addEventListener("click", function(){
     const message = chat.value 
+    chat.value = null
     if (!message.trim()) return;
-
+    add_new_message(message)
+    // fetch("/user", {
+    //     method: "POST",
+    //     body: JSON.stringify({ "message": message }),
+    //   });
 })
 
 async function load_message() {
@@ -38,7 +43,7 @@ async function load_message() {
     const datas = await response.json();
 
     if (!datas) return;
-
+    console.log(datas)
     const chatShow = document.querySelector(".chat-show");
     chatShow.innerHTML = ""; // Xóa nội dung cũ
 
@@ -59,4 +64,19 @@ async function load_message() {
 
     // Cuộn xuống cuối cùng để hiển thị tin nhắn mới nhất
     chatShow.scrollTop = chatShow.scrollHeight;
+}
+
+load_message()
+
+function add_new_message(message){
+    const chatShow = document.querySelector(".chat-show");
+
+    const messageuserDiv = document.createElement("div"); // message from user
+    messageuserDiv.classList.add("message-box");
+
+    messageuserDiv.classList.add("user-message");
+
+    messageuserDiv.textContent = message;
+
+    chatShow.appendChild(messageuserDiv); // add user meesage
 }

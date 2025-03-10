@@ -14,4 +14,4 @@ def chat(user: User):
 @router.get("/load_all")
 def load():
     data = get_messages()
-    return (data)
+    return data

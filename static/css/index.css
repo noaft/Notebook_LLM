@@ -7,7 +7,7 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+    background-color: #fff;
     padding: 20px;
 }
 
@@ -28,12 +28,11 @@ body {
 /* Khung hiển thị nội dung chat */
 .chat-show {
     width: 95%;
-    top: 6%;
+    top: 9%;
     position: absolute;
     margin: 0 auto 20px;
     height: 80vh;
     background-color: #fff;
-    border: 1px solid #ccc;
     padding: 10px;
     border-radius: 5px;
     overflow-y: auto;
@@ -71,7 +70,7 @@ body {
 /* Khung nhập chat */
 .chat-container {
     width: 95%;
-    top: 90%;
+    top: 88%;
     position: absolute;
     margin: 0 auto;
     display: flex;
@@ -80,15 +79,15 @@ body {
     background-color: #fff;
     border: 1px solid #ccc;
     border-radius: 5px;
+    box-shadow: 0 6px 4px rgba(0, 0, 0, 0.1); /* Tạo bóng */
 }
+
 
 /* Input nhập tin nhắn */
 .chat-input {
     flex: 1;
     padding: 10px;
-    border: 1px solid #ddd;
     border-radius: 5px;
-    outline: none;
     font-size: 16px;
 }
 
@@ -102,4 +101,8 @@ body {
 
 .add-pdf{
     display: none;
+}
+
+.send:hover{
+    cursor: pointer;
 }

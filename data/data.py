@@ -1,24 +1,31 @@
 import sqlite3
 import json
 
-conn = sqlite3.connect("chat.db")
-cursor = conn.cursor()
+DB_PATH = "chat.db"
 
+# init database
 def init():
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS messages (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            data TEXT
-        )
-    """)
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS messages (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                data TEXT
+            )
+        """)
+        conn.commit()
 
-# Lưu tin nhắn (JSON)
-def save_message( message, response):
+# save  message and respone (JSON)
+def save_message(message, response):
     data = json.dumps({"message": message, "response": response})
-    cursor.execute("INSERT INTO messages (user, data) VALUES ( ?)", ( data))
-    conn.commit()
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO messages (data) VALUES (?)", (data,))
+        conn.commit()
 
-# Lấy tin nhắn
+# get all message
 def get_messages():
-    cursor.execute("SELECT data FROM messages")
-    return [( json.loads(data)) for data in cursor.fetchall()]
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT data FROM messages")
+        return [json.loads(data[0]) for data in cursor.fetchall()]

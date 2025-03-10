@@ -6,6 +6,7 @@ from starlette.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from api.upload import router as upload
 from data.data import init
+from api.user import router as user
 
 init() # init database
 
@@ -30,6 +31,7 @@ templates = Jinja2Templates(directory=templates_dir)
 app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 app.include_router(router=upload)
+app.include_router(router=user)
 
 @app.get("/", response_class=HTMLResponse)
 async def get_index(request: Request):
