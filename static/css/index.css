@@ -37,7 +37,36 @@ body {
     padding: 10px;
     border-radius: 5px;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
+
+/* Hộp chứa tin nhắn */
+.message-box {
+    max-width: 60%;
+    padding: 10px;
+    border-radius: 8px;
+    word-wrap: break-word;
+    display: inline-block;
+}
+
+/* Tin nhắn người dùng (bên phải) */
+.user-message {
+    align-self: flex-end;
+    background-color: #007bff;
+    color: white;
+    text-align: right;
+}
+
+/* Tin nhắn bot (bên trái) */
+.bot-response {
+    align-self: flex-start;
+    background-color: #f1f1f1;
+    color: black;
+    text-align: left;
+}
+
 
 /* Khung nhập chat */
 .chat-container {

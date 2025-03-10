@@ -1,6 +1,7 @@
 const add_data = document.getElementById("add-data");
 const add_pdf = document.getElementById("add-pdf");
-
+const send = document.getElementById("send")
+let chat = document.getElementById("chat-input")
 add_data.addEventListener("click", function () {
     add_pdf.click();
 });
@@ -25,3 +26,37 @@ add_pdf.addEventListener("change", function (event) { // Đổi từ "click" th�
     .then(data => console.log("Success:", data))
     .catch(error => console.error("Error:", error));
 });
+
+send.addEventListener("click", function(){
+    const message = chat.value 
+    if (!message.trim()) return;
+
+})
+
+async function load_message() {
+    const response = await fetch("/load_all");
+    const datas = await response.json();
+
+    if (!datas) return;
+
+    const chatShow = document.querySelector(".chat-show");
+    chatShow.innerHTML = ""; // Xóa nội dung cũ
+
+    datas.forEach((data) => {
+        const messageuserDiv = document.createElement("div"); // message from user
+        const messageresponeDiv = document.createElement("div"); // message from model ai
+        messageuserDiv.classList.add("message-box");
+
+        messageuserDiv.classList.add("user-message");
+        messageresponeDiv.classList.add("bot-response");
+
+        messageuserDiv.textContent = data.message;
+        messageresponeDiv.textContent = data.response;
+
+        chatShow.appendChild(messageuserDiv); // add user meesage
+        chatShow.appendChild(messageresponeDiv); // add respone model
+    });
+
+    // Cuộn xuống cuối cùng để hiển thị tin nhắn mới nhất
+    chatShow.scrollTop = chatShow.scrollHeight;
+}

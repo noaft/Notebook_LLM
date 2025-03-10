@@ -4,21 +4,16 @@ from pathlib import Path
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
-from api.upload import router
+from api.upload import router as upload
+from data.data import init
 
+init() # init database
 
 BASE_DIR = Path(__file__).resolve().parent
 static_dir = Path(BASE_DIR, "static")
 templates_dir = Path(BASE_DIR, "templates")
 
 app = FastAPI()
-
-# Set up Jinja2 templates
-templates = Jinja2Templates(directory=templates_dir)
-
-# Serve static files
-app.mount("/static", StaticFiles(directory=static_dir), name="static")
-
 # cros allow in web
 app.add_middleware(
     CORSMiddleware,
@@ -28,7 +23,13 @@ app.add_middleware(
     allow_headers=["*"], # all method
 )
 
-app.include_router(router=router)
+# Set up Jinja2 templates
+templates = Jinja2Templates(directory=templates_dir)
+
+# Serve static files
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
+
+app.include_router(router=upload)
 
 @app.get("/", response_class=HTMLResponse)
 async def get_index(request: Request):
