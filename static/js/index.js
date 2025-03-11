@@ -32,8 +32,10 @@ send.addEventListener("click", async function(){
     chat.value = null
     if (!message.trim()) return;
     add_new_message(message)
+    console.log(message)
     await fetch("/user", {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ "message": message }),
     });
 })

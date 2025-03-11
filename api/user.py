@@ -1,7 +1,6 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
 from data.data import get_messages
-from model.document import PDFEmbeddingFAISS
 from api.upload import model
 router = APIRouter()
 

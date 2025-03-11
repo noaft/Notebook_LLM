@@ -27,17 +27,22 @@ async def upload(file: UploadFile = File(...)):
 
     return {"filename": file.filename, "content_type": file.content_type}
 
-def read_content(pdf_path, chunk=200, chunk_k=100):
-    reader = PyPDF2.PdfReader(pdf_path)  # Open PDF
+def read_content(pdf_path, chunk=50, chunk_k=25):
+    reader = PyPDF2.PdfReader(pdf_path)  # read PDF
     texts = []
+    
     for page in reader.pages:
-        text = page.extract_text()  # Extract text
-        text_len = len(text) 
-        i = 0 
-        while i < text_len:
-            chunk_text = text[i:i+chunk].strip()
+        text = page.extract_text()  
+        words = text.split()  # split
+        num_words = len(words)
+        
+        i = 0
+        while i < num_words:
+            chunk_text = " ".join(words[i:i+chunk])  # combine to word
             texts.append(chunk_text)
-            if chunk_text:  # Only process non-empty text
-                i += chunk_k
+            i += chunk_k  
+            
+            if i + chunk > num_words:
+                break  # break if end
 
     return texts

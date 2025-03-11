@@ -68,4 +68,4 @@ class PDFEmbeddingFAISS:
     def get_text(self, id, text_file = "text.json"):
         with open(text_file, "r", encoding="utf-8") as f:
             texts = json.load(f)
-        return texts[id]
+        return texts[id[0]]
