@@ -27,15 +27,15 @@ add_pdf.addEventListener("change", function (event) { // Đổi từ "click" th�
     .catch(error => console.error("Error:", error));
 });
 
-send.addEventListener("click", function(){
+send.addEventListener("click", async function(){
     const message = chat.value 
     chat.value = null
     if (!message.trim()) return;
     add_new_message(message)
-    // fetch("/user", {
-    //     method: "POST",
-    //     body: JSON.stringify({ "message": message }),
-    //   });
+    await fetch("/user", {
+        method: "POST",
+        body: JSON.stringify({ "message": message }),
+    });
 })
 
 async function load_message() {

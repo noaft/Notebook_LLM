@@ -1,7 +1,8 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
 from data.data import get_messages
-
+from model.document import PDFEmbeddingFAISS
+from api.upload import model
 router = APIRouter()
 
 class User(BaseModel):
@@ -9,7 +10,10 @@ class User(BaseModel):
 
 @router.post("/user")
 def chat(user: User):
-    pass
+    message = user.message
+    context = model.search(message)
+    print(context)
+    return "test"
 
 @router.get("/load_all")
 def load():
