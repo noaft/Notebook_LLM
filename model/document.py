@@ -25,28 +25,28 @@ class PDFEmbeddingFAISS:
         """
         return self.model.encode(texts, convert_to_numpy=True)
 
-    def save_data(self, embeddings, filename="faiss_index.bin"):
+    def init_index(self, embeddings):
         """
         Save FAISS index to a file
         """
         dimension = embeddings.shape[1]
-        self.index = faiss.IndexFlatL2(dimension)
-        self.index.add(embeddings)
-        faiss.write_index(self.index, filename)
-        print(f"FAISS index has been saved to {filename}") 
+        self.index = faiss.IndexIDMap(faiss.IndexFlatL2(dimension))
+        print(f"FAISS index inited") 
 
-    def save_multil(self, embeddings, filename="faiss_index.bin"):
-        dimension = embeddings[0].shape[0]
-        print(dimension)
-        self.index = faiss.IndexFlatL2(dimension) # init index
+    def save_multil(self, texts, faiss_file="faiss_index.bin"):
+        vectors = self.embed_texts(texts) # embbed
+        ids = np.array(range(len(texts)))  # create id
 
-        for embedding in embeddings:
-            self.index.add(embedding.reshape(1, -1))
+        dimension = vectors.shape[1]
+        self.index = faiss.IndexIDMap(faiss.IndexFlatL2(dimension)) # init index id map
 
-        faiss.write_index(self.index, filename)
-        print(f"FAISS index has been saved to {filename}") 
+        self.index.add_with_ids(vectors, ids.astype(np.int64)) # add to index
 
-    def load_data(self, query, filename="faiss_index.bin", k=1):
+        faiss.write_index(self.index, faiss_file)
+
+        print(f"FAISS index has been saved to {faiss_file}") 
+
+    def search(self, query, filename="faiss_index.bin", k=1):
         """
         Load FAISS index and search for similar texts
         """

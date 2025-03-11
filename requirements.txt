@@ -10,3 +10,5 @@ PyPDF2
 python-multipart
 langchain_community
 langchain
+langchain_openai
+dotenv
