@@ -2,6 +2,7 @@ import faiss
 import numpy as np
 from langchain_community.document_loaders import PyPDFLoader
 from sentence_transformers import SentenceTransformer
+import json
 
 class PDFEmbeddingFAISS:
     def __init__(self, model_name="sentence-transformers/all-MiniLM-L6-v2"):
@@ -33,7 +34,7 @@ class PDFEmbeddingFAISS:
         self.index = faiss.IndexIDMap(faiss.IndexFlatL2(dimension))
         print(f"FAISS index inited") 
 
-    def save_multil(self, texts, faiss_file="faiss_index.bin"):
+    def save_multil(self, texts, faiss_file="faiss_index.bin", text_file = "text.json"):
         vectors = self.embed_texts(texts) # embbed
         ids = np.array(range(len(texts)))  # create id
 
@@ -46,6 +47,12 @@ class PDFEmbeddingFAISS:
 
         print(f"FAISS index has been saved to {faiss_file}") 
 
+        # add text file to get content
+        with open(text_file, "w", encoding="utf-8") as f:
+            json.dump(texts, f, ensure_ascii=False, indent=4)
+
+        print(f"Text content save to {text_file}") 
+
     def search(self, query, filename="faiss_index.bin", k=1):
         """
         Load FAISS index and search for similar texts
@@ -54,5 +61,11 @@ class PDFEmbeddingFAISS:
             self.index = faiss.read_index(filename)  # Load FAISS from file
         
         query_embedding = self.embed_texts([query])
-        D, I = self.index.search(query_embedding, k)  # Find k nearest results
-        return I[0]  # Return indices of matching text passages
+        _, I = self.index.search(query_embedding, k)  # Find k nearest results
+        text = self.get_text(I[0])
+        return text
+    
+    def get_text(self, id, text_file = "text.json"):
+        with open(text_file, "r", encoding="utf-8") as f:
+            texts = json.load(f)
+        return texts[id]
