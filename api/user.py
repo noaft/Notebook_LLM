@@ -2,7 +2,10 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 from data.data import get_messages
 from api.upload import model
+from model.LLM import LLM
+
 router = APIRouter()
+LLM_model = LLM()
 
 class User(BaseModel):
     message: str
@@ -11,8 +14,9 @@ class User(BaseModel):
 def chat(user: User):
     message = user.message
     context = model.search(message)
-    print(context)
-    return "test"
+    respone = LLM_model.get_respone(context, message) # get respone
+    print(respone)
+    return respone
 
 @router.get("/load_all")
 def load():

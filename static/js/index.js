@@ -33,11 +33,13 @@ send.addEventListener("click", async function(){
     if (!message.trim()) return;
     add_new_message(message)
     console.log(message)
-    await fetch("/user", {
+    const respone = await fetch("/user", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ "message": message }),
     });
+    const data = await respone.json();
+    add_new_respone(data)
 })
 
 async function load_message() {
@@ -81,4 +83,17 @@ function add_new_message(message){
     messageuserDiv.textContent = message;
 
     chatShow.appendChild(messageuserDiv); // add user meesage
+}
+
+function add_new_respone(respone){
+    const chatShow = document.querySelector(".chat-show");
+
+    const messageresponeDiv = document.createElement("div"); // message from user
+    messageresponeDiv.classList.add("message-box");
+
+    messageresponeDiv.classList.add("bot-response");
+
+    messageresponeDiv.textContent = respone;
+
+    chatShow.appendChild(messageresponeDiv); // add user meesage
 }
