@@ -15,7 +15,12 @@ class LLM:
         } # header to push url
 
     def get_respone(self, context, question):
-        prompt = f"From the {context} you can help me answer the information related to the question and from there summarize and answer back in the language of the {question}." # promt model
+        prompt = f"You are an advanced AI assistant with deep knowledge across various domains. Based on the given context:  \
+            {context}  \
+            Analyze the information, extract key points, and generate a concise and accurate response. Answer in the language of the question:  \
+            {question}  \
+            Ensure your response is precise, well-structured, and contextually relevant. Use logical reasoning and background knowledge if necessary to enhance clarity and coherence.\
+            " # promt model
         
         data = {
             "model": self.model,
