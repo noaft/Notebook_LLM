@@ -114,3 +114,4 @@ class LLM:
             return coding_prompt
         else:
             return creative_prompt  # Mặc định nếu không thuộc loại nào
+    

@@ -8,7 +8,7 @@ model = PDFEmbeddingFAISS()
 
 @router.post("/upload")
 async def upload(file: UploadFile = File(...)):
-    file_path = './tmp/data.pdf'
+    file_path = f'./tmp/{file.filename}'
 
     # Ensure the directory exists
     os.makedirs('./tmp', exist_ok=True)
