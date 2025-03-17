@@ -27,7 +27,8 @@ body {
 
 /* Khung hiển thị nội dung chat */
 .chat-show {
-    width: 95%;
+    width: 80%;
+    left: 18%;
     top: 9%;
     position: absolute;
     margin: 0 auto 20px;
@@ -53,24 +54,29 @@ body {
 /* Tin nhắn người dùng (bên phải) */
 .user-message {
     align-self: flex-end;
-    background-color: #007bff;
-    color: white;
+    max-width: 90%;
+    background-color: #f1f1f1;
+    color: #000;
     text-align: right;
+    padding: 0.9%;
 }
 
 /* Tin nhắn bot (bên trái) */
 .bot-response {
     align-self: flex-start;
     background-color: #f1f1f1;
+    max-width: 90%;
     color: black;
     text-align: left;
+    padding: 0.9%;
 }
 
 
 /* Khung nhập chat */
 .chat-container {
-    width: 95%;
+    width: 80%;
     top: 88%;
+    left: 18%;
     position: absolute;
     margin: 0 auto;
     display: flex;
@@ -105,4 +111,20 @@ body {
 
 .send:hover{
     cursor: pointer;
+}
+
+.file-show{
+    width: 15%;
+    left: 1%;
+    top: 9%;
+    position: absolute;
+    margin: 0 auto 20px;
+    height: 90vh;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }

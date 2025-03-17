@@ -23,7 +23,7 @@ async def upload(file: UploadFile = File(...)):
 
     # Process the PDF
     texts = read_content(file_path)  
-    model.save_multil(texts)
+    model.save_multil(texts, file.filename)
 
     return {"filename": file.filename, "content_type": file.content_type}
 

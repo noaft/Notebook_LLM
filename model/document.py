@@ -34,7 +34,10 @@ class PDFEmbeddingFAISS:
         self.index = faiss.IndexIDMap(faiss.IndexFlatL2(dimension))
         print(f"FAISS index inited") 
 
-    def save_multil(self, texts, faiss_file="faiss_index.bin", text_file = "text.json"):
+    def save_multil(self,name_file, texts):
+        faiss_file = f"{name_file}.bin"
+        text_file = f"{name_file}.json"
+
         vectors = self.embed_texts(texts) # embbed
         ids = np.array(range(len(texts)))  # create id
 
