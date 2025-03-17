@@ -25,7 +25,7 @@ def load():
     data = get_messages()
     return data
 
-@router.get("load_file")
+@router.get("/load_file")
 def load_file():
     file_name = os.listdir("./tmp")
     return file_name

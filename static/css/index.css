@@ -6,8 +6,8 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background-color: #fff;
+    font-family: 'Arial', sans-serif;
+    background-color: #ffffff; /* Màu nền nhẹ */
     padding: 20px;
 }
 
@@ -16,49 +16,57 @@ body {
     display: block;
     position: absolute;
     right: 2%;
-    margin: 0 auto 20px;
+    top: 2%;
     padding: 10px 20px;
     background-color: #007bff;
     color: #fff;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.add-data:hover {
+    background-color: #0056b3;
 }
 
 /* Khung hiển thị nội dung chat */
 .chat-show {
-    width: 80%;
-    left: 18%;
-    top: 9%;
+    width: 75%;
+    left: 22%;
+    top: 10%;
     position: absolute;
-    margin: 0 auto 20px;
-    height: 80vh;
-    background-color: #fff;
-    padding: 10px;
-    border-radius: 5px;
+    height: 78vh;
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
 }
 
 /* Hộp chứa tin nhắn */
 .message-box {
-    max-width: 60%;
-    padding: 10px;
-    border-radius: 8px;
+    max-width: 65%;
+    padding: 12px;
+    border-radius: 10px;
     word-wrap: break-word;
     display: inline-block;
+    font-size: 16px;
 }
 
 /* Tin nhắn người dùng (bên phải) */
 .user-message {
     align-self: flex-end;
     max-width: 90%;
-    background-color: #f1f1f1;
-    color: #000;
+    background-color: #007bff;
+    color: #fff;
     text-align: right;
-    padding: 0.9%;
+    padding: 10px;
+    border-radius: 12px;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* Tin nhắn bot (bên trái) */
@@ -66,65 +74,111 @@ body {
     align-self: flex-start;
     background-color: #f1f1f1;
     max-width: 90%;
-    color: black;
+    color: #000;
     text-align: left;
-    padding: 0.9%;
+    padding: 10px;
+    border-radius: 12px;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.15);
 }
-
 
 /* Khung nhập chat */
 .chat-container {
-    width: 80%;
-    top: 88%;
-    left: 18%;
+    width: 75%;
+    left: 22%;
+    top: 89%;
     position: absolute;
-    margin: 0 auto;
     display: flex;
     align-items: center;
-    padding: 10px;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-shadow: 0 6px 4px rgba(0, 0, 0, 0.1); /* Tạo bóng */
+    padding: 12px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1);
 }
-
 
 /* Input nhập tin nhắn */
 .chat-input {
     flex: 1;
-    padding: 10px;
-    border-radius: 5px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
     font-size: 16px;
+    outline: none;
+}
+
+.chat-input:focus {
+    border-color: #007bff;
 }
 
 /* Các nút hình ảnh */
 .chat-container img {
-    width: 30px;
-    height: 30px;
-    margin-left: 10px;
+    width: 35px;
+    height: 35px;
+    margin-left: 12px;
     cursor: pointer;
+    transition: transform 0.2s ease-in-out;
 }
 
-.add-pdf{
-    display: none;
+.chat-container img:hover {
+    transform: scale(1.1);
 }
 
-.send:hover{
-    cursor: pointer;
-}
-
-.file-show{
-    width: 15%;
-    left: 1%;
-    top: 9%;
+/* Sidebar hiển thị file */
+.file-show {
+    top: 0%;
+    left: 0%;
+    width: 20%;
     position: absolute;
-    margin: 0 auto 20px;
-    height: 90vh;
-    background-color: #fff;
-    padding: 10px;
-    border-radius: 5px;
+    height: 100vh;
+    background-color: #f9f9f9;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
+    padding: 10px;
+    border-right: 1px solid #ddd;
+}
+
+/* Mục file */
+.file-item {
+    width: 95%;
+    margin: 8px auto;
+    padding: 12px;
+    background-color: #ffffff;
+    color: #333;
+    display: flex;
+    align-items: center;
     gap: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.file-item:hover {
+    background-color: #e6f7ff;
+    border-color: #007bff;
+    transform: scale(1.03);
+    cursor: pointer;
+}
+
+/* Checkbox trong file */
+.file-item input[type="checkbox"] {
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+/* Tên file */
+.file-item span {
+    font-size: 16px;
+    font-weight: 500;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Icon file */
+.file-item::before {
+    content: "📄";
+    font-size: 18px;
 }

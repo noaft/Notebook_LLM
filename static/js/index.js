@@ -97,3 +97,37 @@ function add_new_respone(respone){
 
     chatShow.appendChild(messageresponeDiv); // add user meesage
 }
+
+async function load_doc() {
+    const response = await fetch("http://localhost:8000/load_file");
+    const datas = await response.json(); // Chuyển đổi dữ liệu thành JSON
+
+    const fileShowDiv = document.getElementById("file-show");
+    fileShowDiv.innerHTML = ""; // Xóa nội dung cũ trước khi cập nhật
+
+    datas.forEach(data => {
+        const fileElement = document.createElement("div");
+        fileElement.classList.add("file-item");
+
+        // Checkbox
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.value = data;
+
+        // Tên file
+        const fileName = document.createElement("span");
+        fileName.textContent = data;
+
+        // Sự kiện click chọn checkbox khi bấm vào file-item
+        fileElement.addEventListener("click", () => {
+            checkbox.checked = !checkbox.checked;
+        });
+
+        // Thêm checkbox & tên file vào fileElement
+        fileElement.appendChild(checkbox);
+        fileElement.appendChild(fileName);
+        fileShowDiv.appendChild(fileElement);
+    });
+}
+
+document.addEventListener("DOMContentLoaded", load_doc);

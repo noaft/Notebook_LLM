@@ -56,19 +56,20 @@ class PDFEmbeddingFAISS:
 
         print(f"Text content save to {text_file}") 
 
-    def search(self, query, filename="faiss_index.bin", k=1):
+    def search(self, query, filename, k=1):
         """
         Load FAISS index and search for similar texts
         """
         if self.index is None:
-            self.index = faiss.read_index(filename)  # Load FAISS from file
+            self.index = faiss.read_index(f"./tmp/{filename}.bin")  # Load FAISS from file
         
         query_embedding = self.embed_texts([query])
         _, I = self.index.search(query_embedding, k)  # Find k nearest results
-        text = self.get_text(I[0])
+        text = self.get_text(I[0], filename)
         return text
     
-    def get_text(self, id, text_file = "text.json"):
-        with open(text_file, "r", encoding="utf-8") as f:
+    def get_text(self, id, text_file ):
+        file = f"./tmp/{text_file}.json"
+        with open(file, "r", encoding="utf-8") as f:
             texts = json.load(f)
         return texts[id[0]]
