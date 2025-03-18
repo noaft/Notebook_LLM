@@ -35,9 +35,9 @@ class PDFEmbeddingFAISS:
         print(f"FAISS index inited") 
 
     def save_multil(self,name_file, texts):
-        faiss_file = f"{name_file}.bin"
-        text_file = f"{name_file}.json"
-
+        faiss_file = f"./tmp/{name_file}.bin"
+        text_file = f"./tmp/{name_file}.json"
+        print(texts)
         vectors = self.embed_texts(texts) # embbed
         ids = np.array(range(len(texts)))  # create id
 

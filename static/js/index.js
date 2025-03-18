@@ -25,6 +25,7 @@ add_pdf.addEventListener("change", function (event) { // Đổi từ "click" th�
     .then(response => response.json())
     .then(data => console.log("Success:", data))
     .catch(error => console.error("Error:", error));
+    load_doc()
 });
 
 send.addEventListener("click", async function(){

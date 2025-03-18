@@ -27,5 +27,9 @@ def load():
 
 @router.get("/load_file")
 def load_file():
-    file_name = os.listdir("./tmp")
+    file_name = []
+    file_names = os.listdir("./tmp")
+    for i in file_names:
+        if i.split(".")[-1] == "pdf":
+            file_name.append(i)
     return file_name
