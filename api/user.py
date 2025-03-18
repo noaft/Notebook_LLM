@@ -6,16 +6,16 @@ from model.LLM import LLM
 import os
 
 router = APIRouter()
-LLM_model = LLM()
+LLM_model = LLM() #init model
 
 class User(BaseModel):
-    message: str
-    file_name: str
+    message: str # message from user
+    file_name: list[str] # file name choose
 
 @router.post("/user")
 def chat(user: User):
     message = user.message
-    context = model.search(message)
+    context = model.search(message, user.file_name)
     respone = LLM_model.get_respone(context, message) # get respone
     print(respone)
     return respone

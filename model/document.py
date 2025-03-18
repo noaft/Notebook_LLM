@@ -35,8 +35,9 @@ class PDFEmbeddingFAISS:
         print(f"FAISS index inited") 
 
     def save_multil(self,name_file, texts):
-        faiss_file = f"./tmp/{name_file}.bin"
-        text_file = f"./tmp/{name_file}.json"
+        name = name_file.split(".pdf")[0]
+        faiss_file = f"./tmp/{name}.bin"
+        text_file = f"./tmp/{name}.json"
         print(texts)
         vectors = self.embed_texts(texts) # embbed
         ids = np.array(range(len(texts)))  # create id
@@ -56,17 +57,22 @@ class PDFEmbeddingFAISS:
 
         print(f"Text content save to {text_file}") 
 
-    def search(self, query, filename, k=1):
+    def search(self, query, filenames, k=1):
         """
         Load FAISS index and search for similar texts
         """
-        if self.index is None:
-            self.index = faiss.read_index(f"./tmp/{filename}.bin")  # Load FAISS from file
+        content = [] # all text respone
         
-        query_embedding = self.embed_texts([query])
-        _, I = self.index.search(query_embedding, k)  # Find k nearest results
-        text = self.get_text(I[0], filename)
-        return text
+        for filename in filenames: # one file choose
+            name = filename.split(".pdf")[0] # split name file 
+            if self.index is None:
+                self.index = faiss.read_index(f"./tmp/{name}.bin")  # Load FAISS from file
+            
+            query_embedding = self.embed_texts([query])
+            _, I = self.index.search(query_embedding, k)  # Find k nearest results
+            text = self.get_text(I[0], name)
+            content.append(text)
+        return content
     
     def get_text(self, id, text_file ):
         file = f"./tmp/{text_file}.json"

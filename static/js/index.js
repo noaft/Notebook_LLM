@@ -1,23 +1,26 @@
 const add_data = document.getElementById("add-data");
 const add_pdf = document.getElementById("add-pdf");
-const send = document.getElementById("send")
-let chat = document.getElementById("chat-input")
+const send = document.getElementById("send");
+let chat = document.getElementById("chat-input");
+
+// Trigger file selection when clicking the "add-data" button
 add_data.addEventListener("click", function () {
     add_pdf.click();
 });
 
-// Xử lý sự kiện khi chọn file
-add_pdf.addEventListener("change", function (event) { // Đổi từ "click" thành "change"
-    const file = event.target.files[0]; // Sửa từ "file" thành "files"
+// Handle the event when a file is selected
+add_pdf.addEventListener("change", function (event) {
+    const file = event.target.files[0]; // Get the first selected file
 
     if (!file) {
-        alert("No file chosen!"); // Sửa lỗi chính tả
+        alert("No file chosen!"); // Notify user if no file is selected
         return;
     }
 
     const formData = new FormData();
-    formData.append("file", file); // Sửa từ fileObject thành file
+    formData.append("file", file); // Append the file to FormData
 
+    // Send file to the server via a POST request
     fetch("http://localhost:8000/upload", {
         method: "POST",
         body: formData,
@@ -25,110 +28,130 @@ add_pdf.addEventListener("change", function (event) { // Đổi từ "click" th�
     .then(response => response.json())
     .then(data => console.log("Success:", data))
     .catch(error => console.error("Error:", error));
-    load_doc()
+
+    load_doc(); // Reload document list after uploading
 });
 
+// Handle sending messages
 send.addEventListener("click", async function(){
-    const message = chat.value 
-    chat.value = null
-    if (!message.trim()) return;
-    add_new_message(message)
-    console.log(message)
-    const respone = await fetch("/user", {
+    const message = chat.value; 
+    chat.value = null; // Clear input field after sending
+
+    if (!message.trim()) return; // Prevent sending empty messages
+
+    const file_items = document.querySelectorAll(".file-item");
+    const file_name = [];
+
+    // Collect the names of selected files
+    file_items.forEach(file => {
+        const checkbox = file.querySelector("input[type='checkbox']");
+        if (checkbox.checked) {
+            file_name.push(file.textContent);
+        }
+    });
+    if (!file_name){
+        alert("No file choose!")
+        return
+    }
+    add_new_message(message);
+    console.log(message);
+
+    // Send message and selected file names to the server
+    const response = await fetch("/user", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ "message": message }),
+        body: JSON.stringify({ "message": message, "file_name": file_name }),
     });
-    const data = await respone.json();
-    add_new_respone(data)
-})
 
+    const data = await response.json();
+    add_new_respone(data);
+});
+
+// Load all previous messages from the server
 async function load_message() {
     const response = await fetch("/load_all");
     const datas = await response.json();
 
     if (!datas) return;
-    console.log(datas)
+    console.log(datas);
+
     const chatShow = document.querySelector(".chat-show");
-    chatShow.innerHTML = ""; // Xóa nội dung cũ
+    chatShow.innerHTML = ""; // Clear previous content
 
     datas.forEach((data) => {
-        const messageuserDiv = document.createElement("div"); // message from user
-        const messageresponeDiv = document.createElement("div"); // message from model ai
-        messageuserDiv.classList.add("message-box");
+        const messageuserDiv = document.createElement("div"); // User message
+        const messageresponeDiv = document.createElement("div"); // AI model response
 
-        messageuserDiv.classList.add("user-message");
+        messageuserDiv.classList.add("message-box", "user-message");
         messageresponeDiv.classList.add("bot-response");
 
         messageuserDiv.textContent = data.message;
         messageresponeDiv.textContent = data.response;
 
-        chatShow.appendChild(messageuserDiv); // add user meesage
-        chatShow.appendChild(messageresponeDiv); // add respone model
+        chatShow.appendChild(messageuserDiv); // Add user message
+        chatShow.appendChild(messageresponeDiv); // Add AI response
     });
 
-    // Cuộn xuống cuối cùng để hiển thị tin nhắn mới nhất
+    // Scroll to the bottom to show the latest message
     chatShow.scrollTop = chatShow.scrollHeight;
 }
 
-load_message()
+load_message(); // Load messages when the page loads
 
-function add_new_message(message){
+// Function to add a new user message to the chat
+function add_new_message(message) {
     const chatShow = document.querySelector(".chat-show");
 
-    const messageuserDiv = document.createElement("div"); // message from user
-    messageuserDiv.classList.add("message-box");
-
-    messageuserDiv.classList.add("user-message");
-
+    const messageuserDiv = document.createElement("div");
+    messageuserDiv.classList.add("message-box", "user-message");
     messageuserDiv.textContent = message;
 
-    chatShow.appendChild(messageuserDiv); // add user meesage
+    chatShow.appendChild(messageuserDiv);
 }
 
-function add_new_respone(respone){
+// Function to add a new AI response to the chat
+function add_new_respone(response) {
     const chatShow = document.querySelector(".chat-show");
 
-    const messageresponeDiv = document.createElement("div"); // message from user
-    messageresponeDiv.classList.add("message-box");
+    const messageresponeDiv = document.createElement("div");
+    messageresponeDiv.classList.add("message-box", "bot-response");
+    messageresponeDiv.textContent = response;
 
-    messageresponeDiv.classList.add("bot-response");
-
-    messageresponeDiv.textContent = respone;
-
-    chatShow.appendChild(messageresponeDiv); // add user meesage
+    chatShow.appendChild(messageresponeDiv);
 }
 
+// Load available documents from the server
 async function load_doc() {
     const response = await fetch("http://localhost:8000/load_file");
-    const datas = await response.json(); // Chuyển đổi dữ liệu thành JSON
+    const datas = await response.json(); // Convert response to JSON
 
     const fileShowDiv = document.getElementById("file-show");
-    fileShowDiv.innerHTML = ""; // Xóa nội dung cũ trước khi cập nhật
+    fileShowDiv.innerHTML = ""; // Clear previous content
 
     datas.forEach(data => {
         const fileElement = document.createElement("div");
         fileElement.classList.add("file-item");
 
-        // Checkbox
+        // Create a checkbox
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
         checkbox.value = data;
 
-        // Tên file
+        // Create a span for the file name
         const fileName = document.createElement("span");
         fileName.textContent = data;
 
-        // Sự kiện click chọn checkbox khi bấm vào file-item
+        // Toggle checkbox selection when clicking on file-item
         fileElement.addEventListener("click", () => {
             checkbox.checked = !checkbox.checked;
         });
 
-        // Thêm checkbox & tên file vào fileElement
+        // Append checkbox & file name to fileElement
         fileElement.appendChild(checkbox);
         fileElement.appendChild(fileName);
         fileShowDiv.appendChild(fileElement);
     });
 }
 
+// Load documents when the page is fully loaded
 document.addEventListener("DOMContentLoaded", load_doc);

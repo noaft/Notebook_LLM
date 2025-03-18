@@ -35,7 +35,6 @@ class LLM:
         """
         Chọn prompt phù hợp dựa trên ngữ cảnh và câu hỏi.
         """
-        context = context.strip()
         question = question.strip().lower()
 
         # Prompt hỏi đáp chung
