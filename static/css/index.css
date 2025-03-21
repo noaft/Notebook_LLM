@@ -124,12 +124,25 @@ body {
 }
 
 /* Sidebar hiển thị file */
-.file-show {
+.left-content{
     top: 0%;
     left: 0%;
     width: 20%;
     position: absolute;
     height: 100vh;
+    background-color: #f9f9f9;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border-right: 1px solid #ddd;
+}
+.file-show {
+    top: 5%;
+    left: 0%;
+    width: 100%;
+    position: absolute;
+    height: 95vh;
     background-color: #f9f9f9;
     overflow-y: auto;
     display: flex;
@@ -181,4 +194,14 @@ body {
 .file-item::before {
     content: "📄";
     font-size: 18px;
+}
+
+.delete-file {
+    position: relative;
+    top: 10%;
+    left: 15%;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    z-index: 10;
 }

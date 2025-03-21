@@ -124,7 +124,7 @@ function add_new_respone(response) {
 async function load_doc() {
     const response = await fetch("http://localhost:8000/load_file");
     const datas = await response.json(); // Convert response to JSON
-
+    if (!datas) return;
     const fileShowDiv = document.getElementById("file-show");
     fileShowDiv.innerHTML = ""; // Clear previous content
 
