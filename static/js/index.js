@@ -154,4 +154,29 @@ async function load_doc() {
 }
 
 // Load documents when the page is fully loaded
-document.addEventListener("DOMContentLoaded", load_doc);
+document.addEventListener("DOMContentLoaded", load_doc());
+
+const delete_file = document.getElementById("delete-file")
+
+delete_file.addEventListener("click", async function(){
+    const file_name = [];
+    const file_items = document.querySelectorAll(".file-item");
+    // Collect the names of selected files
+    file_items.forEach(file => {
+        const checkbox = file.querySelector("input[type='checkbox']");
+        if (checkbox.checked) {
+            file_name.push(file.textContent);
+        }
+    });
+    if (!file_name[0]){
+        alert("No file choose!")
+        return
+    }
+    await fetch("/delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({  "filenames": file_name }),
+    });
+
+    load_doc()
+})

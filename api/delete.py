@@ -20,7 +20,7 @@ class data(BaseModel):
 def delete(data: data):
     for filename in data.filenames:
         extensions = [".pdf", ".json", ".bin"]
-        filename_all = filename.split[".pdf"]
+        filename_all = filename.split(".pdf")[0]
         for e in extensions:
             os.remove(f"./tmp/{filename_all}" + e)
 
