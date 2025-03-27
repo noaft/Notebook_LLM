@@ -34,11 +34,6 @@ Once the server is running, you can:
 - Upload PDF files for analysis.
 - Interact with the chatbot via API endpoints.
 
-You can access the interactive API documentation at:
-```
-http://127.0.0.1:8000/docs
-```
-
 ## Dependencies
 Ensure that `requirements.txt` is installed, containing necessary packages such as FastAPI and OpenAI API clients.
 
