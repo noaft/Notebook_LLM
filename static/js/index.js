@@ -2,6 +2,7 @@ const add_data = document.getElementById("add-data");
 const add_pdf = document.getElementById("add-pdf");
 const send = document.getElementById("send");
 let chat = document.getElementById("chat-input");
+const mic = document.getElementById("mic");
 
 // Trigger file selection when clicking the "add-data" button
 add_data.addEventListener("click", function () {
@@ -180,3 +181,10 @@ delete_file.addEventListener("click", async function(){
 
     load_doc()
 })
+
+mic.addEventListener("click", function () {
+    fetch("/mic")
+        .then(response => response.text())  // Lấy dữ liệu dạng text
+        .then(text => add_new_message(text.message), add_new_respone(text.response))  // Hiển thị lên UI
+        .catch(error => console.error("Lỗi khi gọi API:", error));
+});
