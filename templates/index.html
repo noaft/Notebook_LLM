@@ -4,26 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', path='css/index.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <script type="module" src="{{ url_for('static', path='js/index.js') }}"></script>
     <title>Chat UI</title>
 </head>
 
 <body>
-    <button class = "add-data" id = "add-data">+ Add data</button>
-    <input type="file" name="upload" class = "add-pdf" id = "add-pdf" accept="application/pdf" style="display: none;"/>
-    <img src="/static/image/trash.png" class="delete-file" id = "delete-file">
-    <div id = "left-content" class = "left-content">
-        <div class = "file-show" id = "file-show">
+    <div class="app-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>Files</h2>
+                <button class="add-data" id="add-data">
+                    <span>Add File</span>
+                </button>
+            </div>
+            <input type="file" name="upload" class="add-pdf" id="add-pdf" accept="application/pdf" style="display: none;"/>
+            <img src="/static/image/trash.png" class="delete-file" id="delete-file" alt="Delete">
+            <div id="left-content" class="left-content">
+                <div class="file-show" id="file-show">
+                </div>
+            </div>
         </div>
-    </div>
-    <div class = "chat-show">
 
-    </div>
+        <div class="main-content">
+            <div class="chat-header">
+                <h1>Chat Assistant</h1>
+            </div>
+            <div id="chat-show" class="chat-show">
+            </div>
 
-    <div class="chat-container">
-        <input type="text" class="chat-input" id ="chat-input" placeholder="Bắt đầu nhập ....">
-        <img src="/static/image/send.png" class = "send" id = "send">
-        <img src="/static/image/mic.png" class = "mic" id = "mic">
+            <div class="chat-container">
+                <input type="text" class="chat-input" id="chat-input" placeholder="Type your message...">
+                <img src="/static/image/send.png" class="send" id="send" alt="Send">
+                <img src="/static/image/mic.png" class="mic" id="mic" alt="Voice Input">
+            </div>
+        </div>
     </div>
 </body>
 </html>

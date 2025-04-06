@@ -5,30 +5,54 @@
     padding: 0;
 }
 
+:root {
+    --primary-color: #4f46e5;
+    --primary-hover: #4338ca;
+    --secondary-color: #f3f4f6;
+    --text-color: #1f2937;
+    --text-light: #6b7280;
+    --border-color: #e5e7eb;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+}
+
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #ffffff; /* Màu nền nhẹ */
-    padding: 20px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #f9fafb;
+    color: var(--text-color);
+    line-height: 1.5;
 }
 
 /* Nút thêm dữ liệu */
 .add-data {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     position: absolute;
     right: 2%;
     top: 2%;
-    padding: 10px 20px;
-    background-color: #007bff;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
     color: #fff;
     border: none;
-    border-radius: 8px;
+    border-radius: 12px;
     cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-md);
 }
 
 .add-data:hover {
-    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.add-data::before {
+    content: "+";
+    font-size: 20px;
+    font-weight: 300;
 }
 
 /* Khung hiển thị nội dung chat */
@@ -39,46 +63,60 @@ body {
     position: absolute;
     height: 78vh;
     background-color: #ffffff;
-    padding: 15px;
-    border-radius: 8px;
+    padding: 24px;
+    border-radius: 16px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
+    box-shadow: var(--shadow-md);
 }
 
 /* Hộp chứa tin nhắn */
 .message-box {
     max-width: 65%;
-    padding: 12px;
-    border-radius: 10px;
+    padding: 16px;
+    border-radius: 16px;
     word-wrap: break-word;
     display: inline-block;
-    font-size: 16px;
+    font-size: 15px;
+    line-height: 1.6;
+    animation: messageAppear 0.3s ease-out;
+}
+
+@keyframes messageAppear {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Tin nhắn người dùng (bên phải) */
 .user-message {
     align-self: flex-end;
     max-width: 90%;
-    background-color: #007bff;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
     color: #fff;
     text-align: right;
-    padding: 10px;
-    border-radius: 12px;
-    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.15);
+    padding: 16px;
+    border-radius: 16px 16px 4px 16px;
+    box-shadow: var(--shadow-md);
 }
 
 /* Tin nhắn bot (bên trái) */
 .bot-response {
     align-self: flex-start;
-    background-color: #f1f1f1;
+    background-color: var(--secondary-color);
     max-width: 90%;
-    color: #000;
+    color: var(--text-color);
     text-align: left;
-    padding: 10px;
-    border-radius: 12px;
-    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.15);
+    padding: 16px;
+    border-radius: 16px 16px 16px 4px;
+    box-shadow: var(--shadow-sm);
 }
 
 /* Khung nhập chat */
@@ -89,119 +127,166 @@ body {
     position: absolute;
     display: flex;
     align-items: center;
-    padding: 12px;
+    padding: 16px;
     background-color: #ffffff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+    transition: all 0.3s ease;
+}
+
+.chat-container:focus-within {
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
 /* Input nhập tin nhắn */
 .chat-input {
     flex: 1;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 16px;
+    padding: 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    font-size: 15px;
     outline: none;
+    transition: all 0.3s ease;
 }
 
 .chat-input:focus {
-    border-color: #007bff;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
 /* Các nút hình ảnh */
 .chat-container img {
-    width: 35px;
-    height: 35px;
-    margin-left: 12px;
+    width: 40px;
+    height: 40px;
+    margin-left: 16px;
     cursor: pointer;
-    transition: transform 0.2s ease-in-out;
+    transition: all 0.3s ease;
+    padding: 8px;
+    border-radius: 50%;
 }
 
 .chat-container img:hover {
     transform: scale(1.1);
+    background-color: var(--secondary-color);
 }
 
 /* Sidebar hiển thị file */
-.left-content{
+.left-content {
     top: 0%;
     left: 0%;
     width: 20%;
     position: absolute;
     height: 100vh;
-    background-color: #f9f9f9;
+    background-color: #ffffff;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    padding: 10px;
-    border-right: 1px solid #ddd;
+    padding: 16px;
+    border-right: 1px solid var(--border-color);
+    box-shadow: var(--shadow-md);
 }
+
 .file-show {
     top: 5%;
     left: 0%;
     width: 100%;
     position: absolute;
     height: 95vh;
-    background-color: #f9f9f9;
+    background-color: #ffffff;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    padding: 10px;
-    border-right: 1px solid #ddd;
+    padding: 16px;
+    gap: 12px;
 }
 
 /* Mục file */
 .file-item {
     width: 95%;
-    margin: 8px auto;
-    padding: 12px;
+    margin: 0 auto;
+    padding: 16px;
     background-color: #ffffff;
-    color: #333;
+    color: var(--text-color);
     display: flex;
     align-items: center;
-    gap: 10px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    gap: 12px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
     transition: all 0.3s ease;
+    cursor: pointer;
 }
 
 .file-item:hover {
-    background-color: #e6f7ff;
-    border-color: #007bff;
-    transform: scale(1.03);
-    cursor: pointer;
+    background-color: var(--secondary-color);
+    border-color: var(--primary-color);
+    transform: translateX(4px);
+}
+
+.file-item.selected {
+    background-color: #eef2ff;
+    border-color: var(--primary-color);
 }
 
 /* Checkbox trong file */
 .file-item input[type="checkbox"] {
-    transform: scale(1.2);
+    width: 18px;
+    height: 18px;
     cursor: pointer;
+    accent-color: var(--primary-color);
 }
 
 /* Tên file */
 .file-item span {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 500;
     flex: 1;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    color: var(--text-color);
 }
 
 /* Icon file */
 .file-item::before {
     content: "📄";
-    font-size: 18px;
+    font-size: 20px;
 }
 
 .delete-file {
     position: relative;
     top: 10%;
     left: 16.8%;
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     cursor: pointer;
     z-index: 10;
+    padding: 4px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.delete-file:hover {
+    background-color: #fee2e2;
+    transform: scale(1.1);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
 }
