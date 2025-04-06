@@ -192,10 +192,12 @@ mic.addEventListener("click", async function () {
             file_name.push(file.textContent);
         }
     });
+    if (!file_name) return 0;
     const response = await fetch("/mic", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({  "file_name": file_name }),
     });
-    load_doc()
+    add_new_message(response.json().context)
+    add_new_respone(response.json().respone)
 });
