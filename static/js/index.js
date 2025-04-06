@@ -197,4 +197,5 @@ mic.addEventListener("click", async function () {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({  "file_name": file_name }),
     });
+    load_doc()
 });
