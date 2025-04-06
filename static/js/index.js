@@ -182,9 +182,19 @@ delete_file.addEventListener("click", async function(){
     load_doc()
 })
 
-mic.addEventListener("click", function () {
-    fetch("/mic")
-        .then(response => response.text())  // Lấy dữ liệu dạng text
-        .then(text => add_new_message(text.message), add_new_respone(text.response))  // Hiển thị lên UI
-        .catch(error => console.error("Lỗi khi gọi API:", error));
+mic.addEventListener("click", async function () {
+    const file_name = [];
+    const file_items = document.querySelectorAll(".file-item");
+    // Collect the names of selected files
+    file_items.forEach(file => {
+        const checkbox = file.querySelector("input[type='checkbox']");
+        if (checkbox.checked) {
+            file_name.push(file.textContent);
+        }
+    });
+    const response = await fetch("/mic", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({  "file_name": file_name }),
+    });
 });

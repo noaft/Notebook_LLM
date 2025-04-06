@@ -1,7 +1,7 @@
 import speech_recognition as sr
 from fastapi import APIRouter
-from model.document import model
-from model.LLM import LLM_model
+from api.upload import model
+from api.user import LLM_model
 from pydantic import BaseModel
 
 router = APIRouter()
@@ -29,7 +29,7 @@ class User(BaseModel):
     file_name: list[str] # file name choose
 
 
-@router.get("/mic")
+@router.post("/mic")
 def get_text(user: User):
     message = record_and_transcribe_google(20)
     context = model.search(message, user.file_name)
