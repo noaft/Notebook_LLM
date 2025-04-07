@@ -6,8 +6,8 @@ This project implements a chatbot capable of interacting with PDF documents usin
 ## Installation
 ### 1. Clone the Repository
 ```sh
-git clone <repository-url>
-cd <repository-folder>
+git clone https://github.com/noaft/Notebook_LLM.git
+cd Notebook_LLM
 ```
 
 ### 2. Install Dependencies
