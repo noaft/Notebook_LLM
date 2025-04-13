@@ -5,18 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', path='css/index.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script type="module" src="{{ url_for('static', path='js/index.js') }}"></script>
-    <title>Chat UI</title>
+    <title>Chat GPToan</title>
 </head>
 
 <body>
     <div class="app-container">
         <div class="sidebar">
             <div class="sidebar-header">
-                <h2>Files</h2>
-                <button class="add-data" id="add-data">
-                    <span>Add File</span>
-                </button>
+                <h2><i class="fas fa-folder-open"></i> Files</h2>
+                <div class="header-actions">
+                    <button class="theme-toggle" id="theme-toggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="add-data" id="add-data">
+                        <i class="fas fa-plus"></i>
+                        <span>Add File</span>
+                    </button>
+                </div>
             </div>
             <input type="file" name="upload" class="add-pdf" id="add-pdf" accept="application/pdf" style="display: none;"/>
             <img src="/static/image/trash.png" class="delete-file" id="delete-file" alt="Delete">
@@ -28,17 +35,48 @@
 
         <div class="main-content">
             <div class="chat-header">
-                <h1>Chat Assistant</h1>
+                <h1><i class="fas fa-robot"></i> Chat Assistant</h1>
             </div>
             <div id="chat-show" class="chat-show">
             </div>
 
             <div class="chat-container">
                 <input type="text" class="chat-input" id="chat-input" placeholder="Type your message...">
-                <img src="/static/image/send.png" class="send" id="send" alt="Send">
-                <img src="/static/image/mic.png" class="mic" id="mic" alt="Voice Input">
+                <button class="action-button" id="mic">
+                    <i class="fas fa-microphone"></i>
+                </button>
+                <button class="action-button" id="send">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
             </div>
         </div>
     </div>
+
+    <script>
+        // Dark mode toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+        
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            body.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+        
+        function updateThemeIcon(theme) {
+            const icon = themeToggle.querySelector('i');
+            icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+    </script>
 </body>
 </html>
