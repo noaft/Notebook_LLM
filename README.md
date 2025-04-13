@@ -1,7 +1,12 @@
-# Chatbot with PDF Support
-
 ## Overview
 This project implements a chatbot capable of interacting with PDF documents using OpenRouter AI API for language processing.
+- Dark/Light mode support
+- Modern and responsive UI
+- Voice input support
+
+## Interface Preview
+
+![Chat Assistant Interface](/static/image/interface.png)
 
 ## Installation
 ### 1. Clone the Repository
