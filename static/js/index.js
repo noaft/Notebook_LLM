@@ -182,9 +182,14 @@ delete_file.addEventListener("click", async function(){
     load_doc()
 })
 
-mic.addEventListener("click", async function () {
+// Voice recording state
+let isRecording = false;
+const micButton = document.getElementById('mic');
+
+micButton.addEventListener('click', async function() {
     const file_name = [];
     const file_items = document.querySelectorAll(".file-item");
+    
     // Collect the names of selected files
     file_items.forEach(file => {
         const checkbox = file.querySelector("input[type='checkbox']");
@@ -192,12 +197,49 @@ mic.addEventListener("click", async function () {
             file_name.push(file.textContent);
         }
     });
-    if (!file_name) return 0;
-    const response = await fetch("/mic", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({  "file_name": file_name }),
-    });
-    add_new_message(response.json().context)
-    add_new_respone(response.json().respone)
+    
+    if (!file_name.length) {
+        alert("Please select at least one file!");
+        return;
+    }
+
+    isRecording = !isRecording;
+    
+    if (isRecording) {
+        micButton.classList.add('recording');
+        // Start recording logic here
+        console.log('Recording started');
+        
+        try {
+            const response = await fetch("/mic", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ "file_name": file_name }),
+            });
+            
+            const data = await response.json();
+            
+            // Add user message (voice input)
+            add_new_message("Voice input");
+            
+            // Add bot response
+            add_new_respone(data.response);
+            
+            // Scroll to bottom
+            const chatShow = document.querySelector(".chat-show");
+            chatShow.scrollTop = chatShow.scrollHeight;
+            
+        } catch (error) {
+            console.error("Error:", error);
+            alert("An error occurred while processing voice input");
+        } finally {
+            // Reset recording state
+            isRecording = false;
+            micButton.classList.remove('recording');
+        }
+    } else {
+        micButton.classList.remove('recording');
+        // Stop recording logic here
+        console.log('Recording stopped');
+    }
 });

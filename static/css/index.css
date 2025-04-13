@@ -224,6 +224,7 @@ body {
     transition: var(--transition);
     cursor: pointer;
 }
+
 /* Delete file icon */
 .delete-file {
     position: fixed;
@@ -347,5 +348,62 @@ body {
     
     .message-box {
         max-width: 85%;
+    }
+}
+
+/* Action buttons */
+.action-button {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-button:hover {
+    background-color: var(--secondary-color);
+    transform: scale(1.1);
+}
+
+.action-button i {
+    font-size: 1.25rem;
+}
+
+/* Voice recording animation */
+.action-button.recording {
+    animation: pulse 1.5s infinite;
+    color: #ef4444;
+}
+
+.action-button.recording i {
+    animation: recording 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+    }
+}
+
+@keyframes recording {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
     }
 }
