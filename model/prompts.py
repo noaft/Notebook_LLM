@@ -8,64 +8,14 @@ class PromptTemplates:
     Hãy trả lời một cách chính xác, ngắn gọn và dễ hiểu.
     Nếu không tìm thấy thông tin trong tài liệu, hãy nói rõ điều đó."""
 
-    # Prompt cho xử lý tài liệu
-    DOCUMENT_PROMPT = """Dưới đây là nội dung của tài liệu:
-    {document_content}
+    # Prompt cho trò chuyện thông thường
+    CHAT_PROMPT = """Bạn là một trợ lý AI thân thiện và hữu ích.
+    Hãy trò chuyện với người dùng một cách tự nhiên và thân thiện.
+    Câu hỏi của người dùng: {question}
     
-    Hãy phân tích và tóm tắt các thông tin chính trong tài liệu này."""
+    Hãy trả lời một cách ngắn gọn, rõ ràng và hữu ích."""
 
-    # Prompt cho tìm kiếm thông tin
-    SEARCH_PROMPT = """Dựa vào nội dung tài liệu sau:
-    {document_content}
-    
-    Hãy trả lời câu hỏi: {question}
-    
-    Nếu thông tin không có trong tài liệu, hãy trả lời: "Tôi không tìm thấy thông tin này trong tài liệu.""""
-
-    # Prompt cho so sánh tài liệu
-    COMPARE_PROMPT = """Dưới đây là nội dung của hai tài liệu:
-    
-    Tài liệu 1:
-    {doc1_content}
-    
-    Tài liệu 2:
-    {doc2_content}
-    
-    Hãy so sánh và chỉ ra những điểm giống và khác nhau giữa hai tài liệu."""
-
-    # Prompt cho tóm tắt tài liệu
-    SUMMARIZE_PROMPT = """Hãy tóm tắt nội dung chính của tài liệu sau:
-    {document_content}
-    
-    Tóm tắt cần ngắn gọn, súc tích và bao quát được các ý chính."""
-
-    # Prompt cho giải thích thuật ngữ
-    EXPLAIN_PROMPT = """Trong tài liệu có đề cập đến thuật ngữ: {term}
-    
-    Hãy giải thích ý nghĩa của thuật ngữ này dựa trên ngữ cảnh trong tài liệu."""
-
-    # Prompt cho voice input
-    VOICE_PROMPT = """Bạn vừa nghe được câu hỏi từ người dùng qua giọng nói:
-    {voice_input}
-    
-    Hãy phân tích và trả lời câu hỏi này dựa trên nội dung tài liệu:
-    {document_content}"""
-
-    # Prompt cho lập trình
-    CODING_PROMPT = """Bạn là một trợ lý lập trình thông minh.
-    Dựa vào nội dung tài liệu:
-    {document_content}
-    
-    Hãy trả lời câu hỏi về lập trình: {question}
-    
-    Nếu cần, hãy cung cấp code mẫu và giải thích chi tiết."""
-
-    # Prompt cho sáng tạo nội dung
-    CREATIVE_PROMPT = """Bạn là một trợ lý sáng tạo.
-    Dựa vào nội dung tài liệu:
-    {document_content}
-    
-    Hãy tạo nội dung sáng tạo theo yêu cầu: {question}"""
+    # ... existing code ...
 
     # Các pattern để nhận diện loại câu hỏi
     PATTERNS = {
@@ -102,20 +52,19 @@ class PromptTemplates:
             r"tạo",
             r"nghĩ ra",
             r"đề xuất"
+        ],
+        "chat": [
+            r"chào",
+            r"xin chào",
+            r"hi",
+            r"hello",
+            r"bạn khỏe không",
+            r"cảm ơn",
+            r"tạm biệt",
+            r"bye",
+            r"goodbye"
         ]
     }
-
-    @staticmethod
-    def detect_prompt_type(question: str) -> str:
-        """Phát hiện loại prompt dựa trên nội dung câu hỏi"""
-        question = question.lower().strip()
-        
-        for prompt_type, patterns in PromptTemplates.PATTERNS.items():
-            for pattern in patterns:
-                if re.search(pattern, question):
-                    return prompt_type
-                    
-        return "search"  # Mặc định là prompt tìm kiếm
 
     @staticmethod
     def get_prompt(prompt_type: str, **kwargs) -> str:
@@ -129,7 +78,8 @@ class PromptTemplates:
             "explain": PromptTemplates.EXPLAIN_PROMPT,
             "voice": PromptTemplates.VOICE_PROMPT,
             "coding": PromptTemplates.CODING_PROMPT,
-            "creative": PromptTemplates.CREATIVE_PROMPT
+            "creative": PromptTemplates.CREATIVE_PROMPT,
+            "chat": PromptTemplates.CHAT_PROMPT
         }
         
         if prompt_type not in templates:
