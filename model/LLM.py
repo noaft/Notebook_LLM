@@ -34,5 +34,5 @@ class LLM:
 
     def get_prompt(self, context: str, question: str) -> str:
         prompt_type = PromptTemplates.detect_prompt_type(question)
-        return PromptTemplates.get_prompt(prompt_type, context=context, question=question)
+        return PromptTemplates.get_prompt(prompt_type, document_content=context, question=question)
     

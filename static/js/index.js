@@ -35,6 +35,17 @@ add_pdf.addEventListener("change", function (event) {
 
 // Handle sending messages
 send.addEventListener("click", async function(){
+    const chatContainer = document.querySelector('.chat-container');
+
+    const observer = new MutationObserver(() => {
+        scrollToBottom();
+    });
+    
+    observer.observe(chatContainer, {
+        childList: true,
+        subtree: true
+    });
+
     const message = chat.value; 
     chat.value = null; // Clear input field after sending
 
@@ -66,6 +77,11 @@ send.addEventListener("click", async function(){
 
     const data = await response.json();
     add_new_respone(data);
+    
+    observer.observe(chatContainer, {
+        childList: true,
+        subtree: true
+    });
 });
 
 // Load all previous messages from the server
@@ -243,3 +259,131 @@ micButton.addEventListener('click', async function() {
         console.log('Recording stopped');
     }
 });
+
+// Hàm cuộn xuống cuối chat
+function scrollToBottom() {
+    const chatMessages = document.querySelector('.chat-messages');
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Hàm hiển thị tin nhắn với hiệu ứng gõ từng ký tự
+function displayMessageWithTypingEffect(message, isUser = false) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+    
+    if (isUser) {
+        // Hiển thị ngay lập tức cho tin nhắn người dùng
+        messageDiv.textContent = message;
+        chatMessages.appendChild(messageDiv);
+        // Cuộn xuống sau khi hiển thị tin nhắn người dùng
+        setTimeout(scrollToBottom, 100);
+    } else {
+        // Thêm placeholder cho tin nhắn bot
+        const typingIndicator = document.createElement('div');
+        typingIndicator.className = 'typing-indicator';
+        typingIndicator.innerHTML = '<span></span><span></span><span></span>';
+        messageDiv.appendChild(typingIndicator);
+        chatMessages.appendChild(messageDiv);
+        
+        // Cuộn xuống khi hiển thị typing indicator
+        setTimeout(scrollToBottom, 100);
+        
+        // Xóa typing indicator sau 1 giây
+        setTimeout(() => {
+            typingIndicator.remove();
+            
+            // Hiển thị từng ký tự một
+            let index = 0;
+            
+            function typeNextChar() {
+                if (index < message.length) {
+                    messageDiv.textContent += message[index];
+                    index++;
+                    // Cuộn xuống sau mỗi ký tự
+                    scrollToBottom();
+                    
+                    // Thêm độ trễ ngẫu nhiên giữa các ký tự (30-70ms)
+                    const delay = Math.random() * 40 + 30;
+                    setTimeout(typeNextChar, delay);
+                } else {
+                    // Cuộn xuống lần cuối sau khi hiển thị xong
+                    setTimeout(scrollToBottom, 100);
+                }
+            }
+            
+            // Bắt đầu gõ ký tự đầu tiên
+            typeNextChar();
+        }, 1000);
+    }
+}
+
+// Thêm sự kiện cuộn xuống khi có tin nhắn mới
+document.addEventListener('DOMContentLoaded', () => {
+    const chatContainer = document.querySelector('.chat-container');
+    const observer = new MutationObserver(() => {
+        scrollToBottom();
+    });
+    
+    observer.observe(chatContainer, {
+        childList: true,
+        subtree: true
+    });
+});
+
+// Cập nhật hàm sendMessage để sử dụng hiệu ứng gõ
+async function sendMessage() {
+    const message = messageInput.value.trim();
+    if (message === '') return;
+
+    // Hiển thị tin nhắn người dùng
+    displayMessageWithTypingEffect(message, true);
+    messageInput.value = '';
+
+    try {
+        const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        // Hiển thị phản hồi với hiệu ứng gõ
+        displayMessageWithTypingEffect(data.response);
+    } catch (error) {
+        console.error('Error:', error);
+        displayMessageWithTypingEffect('Xin lỗi, đã có lỗi xảy ra. Vui lòng thử lại sau.');
+    }
+}
+
+// Cập nhật hàm handleVoiceInput để sử dụng hiệu ứng gõ
+async function handleVoiceInput(transcript) {
+    // Hiển thị tin nhắn người dùng
+    displayMessageWithTypingEffect(transcript, true);
+
+    try {
+        const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message: transcript }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        // Hiển thị phản hồi với hiệu ứng gõ
+        displayMessageWithTypingEffect(data.response);
+    } catch (error) {
+        console.error('Error:', error);
+        displayMessageWithTypingEffect('Xin lỗi, đã có lỗi xảy ra. Vui lòng thử lại sau.');
+    }
+}
