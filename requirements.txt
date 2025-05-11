@@ -14,3 +14,5 @@ langchain_openai
 dotenv
 pyaudio
 SpeechRecognition
+langchain-text-splitters
+langchain-google-vertexai

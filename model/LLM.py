@@ -1,174 +1,121 @@
 import requests
 import os
 import logging
-from typing import Optional, Dict, Any, List, Union
+from typing import Optional, Dict, Any, List, Iterator
 from dotenv import load_dotenv
-from data.data import save_message
-load_dotenv() # load env from file.env
-from model.prompts import PromptTemplates
+from langchain_core.language_models.llms import LLM
+from langchain_core.callbacks.manager import CallbackManagerForLLMRun
+from langchain_core.outputs import GenerationChunk
+
+# Load .env file
+load_dotenv()
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-class LLM:
-    def __init__(
-        self, 
-        model_name: str = "meta-llama/llama-3.3-70b-instruct:free",
-        api_key: Optional[str] = None,
-        max_tokens: int = 195,
-        temperature: float = 0.7,
-        top_p: float = 1.0,
-        frequency_penalty: float = 0.0,
-        presence_penalty: float = 0.0,
-        timeout: int = 30
-    ):
-        """
-        Initialize the LLM class with configurable parameters.
-        
-        Args:
-            model_name: Name of the model to use
-            api_key: API key for authentication. If None, will try to get from environment
-            max_tokens: Maximum number of tokens to generate
-            temperature: Controls randomness in the output
-            top_p: Controls diversity via nucleus sampling
-            frequency_penalty: Penalizes repeated tokens
-            presence_penalty: Penalizes new tokens
-            timeout: Request timeout in seconds
-        """
-        self.model = model_name
-        self.api_key = api_key or os.getenv("API_KEY")
+
+class LLM_model(LLM):
+    model: str = "meta-llama/llama-3.3-70b-instruct:free"
+    api_key: Optional[str] = None
+    max_tokens: int = 195
+    temperature: float = 0.7
+    top_p: float = 1.0
+    frequency_penalty: float = 0.0
+    presence_penalty: float = 0.0
+    timeout: int = 30
+
+    # Internal fields (not Pydantic-managed)
+    url: str = "https://openrouter.ai/api/v1/chat/completions"
+    headers: Dict[str, str] = {}
+
+    def __init__(self, **kwargs):
+        # Use Pydantic BaseModel init
+        super().__init__(**kwargs)
+
+        # Set api_key from environment if not passed
+        self.api_key = self.api_key or os.getenv("API_KEY")
         if not self.api_key:
-            raise ValueError("API key must be provided either directly or through environment variables")
-            
-        self.url = "https://openrouter.ai/api/v1/chat/completions"
+            raise ValueError("API key must be provided either directly or via environment variables")
+
+        # Construct headers
         self.headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json"
         }
-        
-        # Model parameters
-        self.max_tokens = max_tokens
-        self.temperature = temperature
-        self.top_p = top_p
-        self.frequency_penalty = frequency_penalty
-        self.presence_penalty = presence_penalty
-        self.timeout = timeout
+        self.model = self.model# Replace '/' with '-' for URL compatibility
 
-    def get_response(
-        self, 
-        context: str, 
-        question: str,
-        stream: bool = False,
-        **kwargs
-    ) -> Union[str, requests.Response]:
-        """
-        Get response from the LLM model.
-        
-        Args:
-            context: Context for the question
-            question: Question to ask
-            stream: Whether to stream the response
-            **kwargs: Additional parameters to override default settings
-            
-        Returns:
-            Response from the model or streaming response object
-        """
+    def _call(
+        self,
+        prompt: str,
+        stop: Optional[List[str]] = None,
+        run_manager: Optional[CallbackManagerForLLMRun] = None,
+        **kwargs: Any,
+    ) -> str:
+        """Call OpenRouter API."""
         try:
-            prompt = self.get_prompt(context, question)
-            
-            # Prepare request data with default and override parameters
             data = {
                 "model": self.model,
                 "messages": [{"role": "user", "content": prompt}],
-                "max_tokens": kwargs.get('max_tokens', self.max_tokens),
-                "temperature": kwargs.get('temperature', self.temperature),
-                "top_p": kwargs.get('top_p', self.top_p),
-                "frequency_penalty": kwargs.get('frequency_penalty', self.frequency_penalty),
-                "presence_penalty": kwargs.get('presence_penalty', self.presence_penalty),
-                "stream": stream
+                "max_tokens": kwargs.get("max_tokens", self.max_tokens),
+                "temperature": kwargs.get("temperature", self.temperature),
+                "top_p": kwargs.get("top_p", self.top_p),
+                "frequency_penalty": kwargs.get("frequency_penalty", self.frequency_penalty),
+                "presence_penalty": kwargs.get("presence_penalty", self.presence_penalty),
             }
-            
-            logger.info(f"Sending request to {self.model} with prompt length: {len(prompt)}")
+
+            logger.info(f"Sending request to {self.model} with prompt: {prompt[:30]}...")
+
             response = requests.post(
-                self.url, 
-                headers=self.headers, 
+                self.url,
+                headers=self.headers,
                 json=data,
-                timeout=self.timeout,
-                stream=stream
+                timeout=self.timeout
             )
-            
             response.raise_for_status()
-            
-            if stream:
-                return response
-                
             result = response.json()
-            data = result['choices'][0]['message']['content']
-            
-            # Save conversation
-            save_message(question, data)
-            logger.info(f"Successfully got response with length: {len(data)}")
-            
-            return data
-            
+            output = result['choices'][0]['message']['content']
+
+            logger.info(f"Received response of length {len(output)}")
+            return output
+
         except requests.exceptions.RequestException as e:
-            logger.error(f"Error making request: {str(e)}")
+            logger.error(f"Request error: {e}")
             raise
         except Exception as e:
-            logger.error(f"Unexpected error: {str(e)}")
+            logger.error(f"Unexpected error: {e}")
             raise
 
-    def get_prompt(self, context: str, question: str) -> str:
-        """
-        Get formatted prompt based on question type.
-        
-        Args:
-            context: Context for the question
-            question: Question to ask
-            
-        Returns:
-            Formatted prompt string
-        """
-        prompt_type = PromptTemplates.detect_prompt_type(question)
-        return PromptTemplates.get_prompt(prompt_type, document_content=context, question=question)
-    
-    def get_available_models(self) -> List[str]:
-        """
-        Get list of available models from the API.
-        
-        Returns:
-            List of available model names
-        """
-        try:
-            response = requests.get(
-                "https://openrouter.ai/api/v1/models",
-                headers=self.headers,
-                timeout=self.timeout
-            )
-            response.raise_for_status()
-            models = response.json()
-            return [model['id'] for model in models]
-        except Exception as e:
-            logger.error(f"Error getting available models: {str(e)}")
-            return []
-    
-    def get_model_info(self) -> Dict[str, Any]:
-        """
-        Get information about the current model.
-        
-        Returns:
-            Dictionary containing model information
-        """
-        try:
-            response = requests.get(
-                f"https://openrouter.ai/api/v1/models/{self.model}",
-                headers=self.headers,
-                timeout=self.timeout
-            )
-            response.raise_for_status()
-            return response.json()
-        except Exception as e:
-            logger.error(f"Error getting model info: {str(e)}")
-            return {}
-    
+    def _stream(
+        self,
+        prompt: str,
+        stop: Optional[List[str]] = None,
+        run_manager: Optional[CallbackManagerForLLMRun] = None,
+        **kwargs: Any,
+    ) -> Iterator[GenerationChunk]:
+        """Simulated streaming output (char-by-char)."""
+        for char in prompt[:100]:  # Simulate max 100 tokens
+            chunk = GenerationChunk(text=char)
+            if run_manager:
+                run_manager.on_llm_new_token(chunk.text, chunk=chunk)
+            yield chunk
+
+    @property
+    def _identifying_params(self) -> Dict[str, Any]:
+        return {"model_name": self.model}
+
+    @property
+    def _llm_type(self) -> str:
+        return "custom"
+
+
+# ✅ Example usage
+if __name__ == "__main__":
+    llm = LLM_model(
+        model="meta-llama/llama-3.3-70b-instruct:free",
+        api_key=os.getenv("API_KEY"),
+        max_tokens=100
+    )
+    prompt = "What is the capital of France?"
+    response = llm.invoke(prompt)
+    print(f"Response: {response}")
